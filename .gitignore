@@ -1,0 +1,41 @@
+# Datasets & Bag files
+datasets/
+*.bag
+*.db3
+*.db
+*.npz
+
+# Archives
+*.tar.gz
+*.zip
+
+# Video inputs/outputs
+visual_video/
+output_results/
+output/
+1f_12f_13f/
+
+# Build and IDE caches
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ipynb_checkpoints/
+*.log
+*.osa
+*.pcd
+*.ply
+
+# External workspaces
+isaac_ros_common/
+isaac_ros_visual_slam/
+OmniNxt/
+basalt/
+ORB_SLAM3_ROS2/
+synccap_ros_remote/
+vins-application-master/
+models_and_assets/
+Stereo_cam_ws/
+
+# Temporary ready_to_run folder (already merged into root)
+rtmpose_ready_to_run/

@@ -1,0 +1,77 @@
+%YAML:1.0
+
+#common parameters
+imu: 1         
+num_of_cam: 2  
+
+imu_topic: "/imu/data_raw"
+image0_topic: "/camera/left/image_raw"
+image1_topic: "/camera/right/image_raw"
+output_path: "./output/"
+
+cam0_calib: "config_180/left_960.yaml"
+cam1_calib: "config_180/right_960.yaml"
+image_width: 960
+image_height: 600
+fisheye_mask: "mask0.png"
+mask0: "mask0.png"
+mask1: "mask1.png"
+
+# GPU acceleration
+use_gpu         : 0
+use_gpu_acc_flow: 0
+use_gpu_ceres   : 0
+   
+# Extrinsic parameter between IMU and Camera
+estimate_extrinsic: 0   # 0: 锁定离线高精度标定外参，避免平稳运动下外参退化漂移导致终点偏差加大
+
+body_T_cam0: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: d
+   data: [  0.25091278,  0.00548910,  0.96799413, -0.10491511,
+           -0.96797581,  0.00979053,  0.25085251,  0.09482819,
+           -0.00810022, -0.99993701,  0.00776989,  0.00509889,
+            0.0,         0.0,         0.0,         1.0 ]
+
+body_T_cam1: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: d
+   data: [  0.23686719, -0.00674644,  0.97151862, -0.08836973,
+           -0.97151445,  0.00589150,  0.23690709,  0.03514329,
+           -0.00732198, -0.99995989, -0.00515877,  0.00227706,
+            0.00000000,  0.00000000,  0.00000000,  1.00000000 ]
+
+#Multiple thread support
+multiple_thread: 1
+
+#feature tracker parameters
+max_cnt: 250            # 250 特征点保证充足视觉几何约束并实现快速 Ceres 求解
+min_dist: 15            # 15 特征点抽取间距
+freq: 20                # 20Hz 视觉抽取频率，降低队列积压
+F_threshold: 1.0        # 严格对极约束
+show_track: 1           # publish tracking image as topic
+flow_back: 1            # perform forward and backward optical flow
+
+#optimization parameters
+max_solver_time: 0.10  # 充分收敛窗口
+max_num_iterations: 15 # 保持 15 次迭代次数
+keyframe_parallax: 5.0  # 视差阈值调整为 5.0，合理控制关键帧生成速率避免位姿图膨胀
+
+#imu parameters
+acc_n: 0.20             # 适度调高加速度计噪声协方差，让优化器更信任双目深度几何约束
+gyr_n: 0.010            # 恢复 0.010 优选陀螺仪噪声基准
+acc_w: 0.004            # 提高偏置随机游走权重，让加速度计偏置快速自适应吸收剩余重力残差
+gyr_w: 0.0001
+
+g_norm: 9.75600         # 实测静态重力均值 (从 9.81007 修正为 9.756，物理根源消除恒定虚假向上加速度)
+
+#unsynchronization parameters
+estimate_td: 0          # 在线估计相机与 IMU 时间延迟
+td: 0.01128
+
+#loop closure parameters
+load_previous_pose_graph: 0
+pose_graph_save_path: "./output/pose_graph/"
+save_image: 0
